@@ -2,6 +2,8 @@
 
 A friendly little web app for making music in the famous Nintendo game.
 
+Try it out here: [pokomusika.notuom.com](https://pokomusika.notuom.com/)
+
 ## Built With
 
 - [React](https://react.dev/)
@@ -13,6 +15,10 @@ A friendly little web app for making music in the famous Nintendo game.
 - [React Icons](https://react-icons.github.io/)
 - [FontAwesome](https://fontawesome.com/)
 - [Mallet Sample Pack by u/SignatureLabel](https://www.reddit.com/r/edmproduction/comments/avqplp/malletxylo_kit_with_200_one_shot_samples_and_key/)
+
+## Special Thanks
+
+- Lunalite on the Pokopia Island Discord for crafting me some "Re" music mats!
 
 ## Note from Author
 
