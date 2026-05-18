@@ -1,8 +1,6 @@
 import clsx from "clsx";
 import {
   FaDeleteLeft,
-  FaEye,
-  FaEyeSlash,
   FaKeyboard,
   FaPause,
   FaPlay,
