@@ -3,11 +3,15 @@ import {
   FaDeleteLeft,
   FaEye,
   FaEyeSlash,
+  FaKeyboard,
   FaPause,
   FaPlay,
   FaQuoteRight,
+  FaRegKeyboard,
   FaStop,
+  FaTrash,
 } from "react-icons/fa6";
+import { useAudio } from "@/stores/audio";
 import { useSongStore } from "@/stores/song";
 import { useUserInterfaceStore } from "@/stores/user-interface";
 import { PianoKeyboard } from "../PianoKeyboard/PianoKeyboard";
@@ -18,10 +22,18 @@ import { BottomBarButton } from "./BottomBarButton";
  * It can be collapsed or expanded and sticks to the bottom of the screen.
  */
 export const BottomBar = () => {
+  const audio = useAudio();
   const { showPianoKeyboard, toggleShowPianoKeyboard } =
     useUserInterfaceStore();
-  const { isPlaying, toggleIsPlaying, addOrReplaceSelectedNote } =
-    useSongStore(); // TODO optimize?
+  const {
+    isPlaying,
+    setIsPlaying,
+    addOrReplaceSelectedNote,
+    deleteSelectedNote,
+    empty,
+    tracks,
+    setPlayheadIndex,
+  } = useSongStore(); // TODO optimize?
 
   return (
     <div className="fixed flex-col flex w-full inset-s-0 inset-e-0 bottom-safe-area">
@@ -35,7 +47,9 @@ export const BottomBar = () => {
           <BottomBarButton
             label="Delete Note"
             Icon={FaDeleteLeft}
-            onClick={() => {}}
+            onClick={() => {
+              deleteSelectedNote();
+            }}
           />
           <BottomBarButton
             label="Insert Break"
@@ -49,14 +63,49 @@ export const BottomBar = () => {
               showPianoKeyboard ? "Hide Piano Keyboard" : "Show Piano Keyboard"
             }
             Icon={isPlaying ? FaPause : FaPlay}
-            onClick={toggleIsPlaying}
+            onClick={() => {
+              if (!isPlaying) {
+                audio?.playSong(
+                  tracks,
+                  (index) => {
+                    setPlayheadIndex(index);
+                  },
+                  () => {
+                    setIsPlaying(false);
+                    setPlayheadIndex(-1);
+                  },
+                );
+                setIsPlaying(true);
+              } else {
+                audio?.pause();
+                setIsPlaying(false);
+              }
+            }}
           />
-          <BottomBarButton label="Stop" Icon={FaStop} onClick={() => {}} />
+          <BottomBarButton
+            label="Stop"
+            Icon={FaStop}
+            onClick={() => {
+              audio?.stop();
+              setIsPlaying(false);
+              setPlayheadIndex(-1);
+            }}
+          />
+          <BottomBarButton
+            label="Delete Song"
+            Icon={FaTrash}
+            onClick={() => {
+              empty();
+              audio?.stop();
+              setIsPlaying(false);
+              setPlayheadIndex(-1);
+            }}
+          />
           <BottomBarButton
             label={
               showPianoKeyboard ? "Hide Piano Keyboard" : "Show Piano Keyboard"
             }
-            Icon={showPianoKeyboard ? FaEyeSlash : FaEye}
+            Icon={showPianoKeyboard ? FaRegKeyboard : FaKeyboard}
             onClick={toggleShowPianoKeyboard}
           />
         </div>

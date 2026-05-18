@@ -1,7 +1,7 @@
-import type { SongTrackNotes } from "@/lib/types";
-import { TimelineNote } from "./TimelineNote";
-import { useSongStore } from "@/stores/song";
 import clsx from "clsx";
+import type { SongTrackNotes } from "@/lib/types";
+import { useSongStore } from "@/stores/song";
+import { TimelineNote } from "./TimelineNote";
 
 type TimelineTrackProps = {
   trackIndex: number;
@@ -37,6 +37,7 @@ export const TimelineTrack = ({ trackIndex, notes }: TimelineTrackProps) => {
         "w-full",
         "gap-2",
         "p-2",
+        "rounded-2xl",
         isSelected && "bg-timeline-selected",
       )}
     >

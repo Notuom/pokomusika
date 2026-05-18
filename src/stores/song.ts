@@ -12,17 +12,29 @@ type SongStoreState = {
 
   // Notes on each track
   tracks: SongTracks;
+
+  // Currently selected note index, if isPlaying is true, otherwise -1
+  playheadIndex: number;
 };
 
 type SongStoreActions = {
   // Toggle play/pause
-  toggleIsPlaying: () => void;
+  setIsPlaying: (nextIsPlaying: boolean) => void;
 
   // Switch to selected track and note index
   setSelection: (nextTrackIndex: number, nextTrackNoteIndex: number) => void;
 
   // Add a new note to the selected [track, index]
   addOrReplaceSelectedNote: (nextNote: Note) => void;
+
+  // Delete the selected note, moving the other notes around
+  deleteSelectedNote: () => void;
+
+  // Reset the whole song to empty
+  empty: () => void;
+
+  // Change current playhead position
+  setPlayheadIndex: (nextPlayingNoteIndex: number) => void;
 };
 
 type SongStore = SongStoreState & SongStoreActions;
@@ -39,12 +51,13 @@ export const useSongStore = create<SongStore>((set) => ({
   isPlaying: false,
   selection: emptySongSelection(),
   tracks: emptySongNotes(),
+  playheadIndex: -1,
 
   // Actions
-  toggleIsPlaying: () => {
-    set((state) => ({
-      isPlaying: !state.isPlaying,
-    }));
+  setIsPlaying: (nextIsPlaying) => {
+    set({
+      isPlaying: nextIsPlaying,
+    });
   },
 
   setSelection: (nextTrackIndex, nextTrackNoteIndex) => {
@@ -82,33 +95,91 @@ export const useSongStore = create<SongStore>((set) => ({
     set((state) => {
       let newSelection = state.selection;
 
-      // Copy existing notes into new array
-      const newNotes = [...state.tracks];
+      // Copy existing tracks into new array
+      const newTracks = [...state.tracks];
 
-      // Copy selected track notes into new array
-      const newSelectedTrackNotes = [...newNotes[state.selection.trackIndex]];
-      const oldNoteAtSelection =
-        newSelectedTrackNotes[state.selection.trackNoteIndex];
+      // Insert breaks on the other tracks
+      for (let i = 0; i < newTracks.length; i++) {
+        const newTrackNotes = [...newTracks[i]];
+        const oldNoteAtSelection =
+          newTrackNotes[state.selection.trackNoteIndex];
 
-      // Check if we're adding to the song or changing an existing note; add empty note and select it if so
-      if (oldNoteAtSelection === null) {
-        // Add new empty note to track
-        newSelectedTrackNotes.push(null);
+        // Check if we're adding to the song or changing an existing note; add empty note and select it if so
+        if (!oldNoteAtSelection) {
+          // Add new empty note to track
+          newTrackNotes.push(null);
 
-        // Update selection
-        newSelection = {
-          trackIndex: state.selection.trackIndex,
-          trackNoteIndex: newSelectedTrackNotes.length - 1,
-        };
+          // Update selection
+          newSelection = {
+            trackIndex: state.selection.trackIndex,
+            trackNoteIndex: newTrackNotes.length - 1,
+          };
+        }
+
+        if (i === state.selection.trackIndex) {
+          newTrackNotes[state.selection.trackNoteIndex] = nextNote;
+        } else {
+          if (
+            newTrackNotes[state.selection.trackNoteIndex]?.type !== "music-mat"
+          ) {
+            newTrackNotes[state.selection.trackNoteIndex] = { type: "break" };
+          }
+        }
+
+        // Assign mutated track to new notes array
+        newTracks[i] = newTrackNotes;
       }
 
-      // Assign note to selected area
-      newSelectedTrackNotes[state.selection.trackNoteIndex] = nextNote;
+      return { tracks: newTracks, selection: newSelection };
+    });
+  },
 
-      // Assign mutated track to new notes array
-      newNotes[state.selection.trackIndex] = newSelectedTrackNotes;
+  deleteSelectedNote: () => {
+    set((state) => {
+      // Copy existing tracks into new array
+      const newTracks = [...state.tracks];
 
-      return { tracks: newNotes, selection: newSelection };
+      // delete the selected note from all tracks
+      for (let i = 0; i < newTracks.length; i++) {
+        const newTrackNotes = [...newTracks[i]];
+        const oldNoteAtSelection =
+          newTrackNotes[state.selection.trackNoteIndex];
+
+        // can't delete the next note placeholder (null)
+        if (!oldNoteAtSelection) {
+          return {};
+        }
+
+        newTrackNotes.splice(state.selection.trackNoteIndex, 1);
+
+        // Assign mutated track to new notes array
+        newTracks[i] = newTrackNotes;
+      }
+
+      // move the selection to the previous note
+      const newSelection: TrackNoteSelection = {
+        trackIndex: state.selection.trackIndex,
+        trackNoteIndex: Math.max(state.selection.trackNoteIndex - 1, 0),
+      };
+
+      return {
+        tracks: newTracks,
+        selection: newSelection,
+      };
+    });
+  },
+
+  empty: () => {
+    set({
+      isPlaying: false,
+      selection: emptySongSelection(),
+      tracks: emptySongNotes(),
+    });
+  },
+
+  setPlayheadIndex: (nextPlayheadIndex) => {
+    set({
+      playheadIndex: nextPlayheadIndex,
     });
   },
 }));

@@ -1,7 +1,7 @@
 import type { IconType } from "react-icons";
-import { NOTE_CONFIGS, type SupportedNote } from "./notes";
-import type { SongTrackNote, SongTrackNotes } from "./types";
 import { FaMusic, FaQuestion, FaQuoteRight } from "react-icons/fa6";
+import { NOTE_CONFIGS, type SupportedNote } from "./notes";
+import type { SongTrackNote, SongTrackNotes, SongTracks } from "./types";
 
 export const trackKey = (notes: SongTrackNotes, index: number) => {
   return `${index}-${notes.join(",")}`;
@@ -83,4 +83,35 @@ export const noteRotation = (note: SongTrackNote): string => {
       return "rotate-270";
     }
   }
+};
+
+export type MergedTracks = Array<Record<number, SongTrackNote>>;
+
+/**
+ * The Song Store state is kept as [trackIndex, noteIndex].
+ * This converts to [noteIndex][trackIndex], with `null` if the note is empty on one of the tracks, for playback.
+ * We don't use an array for the inner dimension because Tone.Sequence treats that as a subdivision.
+ */
+export const mergeTracks = (tracks: SongTracks): MergedTracks => {
+  // const result: MergedTracks = [];
+  // for (let i = 0; i < tracks.length; i++) {
+  //   for (let j = 0; i < tracks[i].length; j++) {
+  //     if (!result[j]) {
+  //       result[j] = [];
+  //     }
+  //     result[j][i] = tracks[i][j];
+  //   }
+  // }
+
+  const maxLength = Math.max(...tracks.map((track) => track.length));
+  const result = new Array<Record<number, SongTrackNote>>(maxLength);
+
+  for (let i = 0; i < maxLength; i++) {
+    result[i] = {};
+    for (let j = 0; j < tracks.length; j++) {
+      result[i][j] = tracks[j][i] ?? null;
+    }
+  }
+
+  return result;
 };
