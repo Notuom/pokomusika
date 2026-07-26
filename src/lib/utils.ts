@@ -65,7 +65,7 @@ export const noteColor = (note: SongTrackNote): string => {
 };
 
 export const noteRotation = (note: SongTrackNote): string => {
-  if (!note || note.type !== "music-mat") {
+  if (note?.type !== "music-mat") {
     return "rotate-none";
   }
 
