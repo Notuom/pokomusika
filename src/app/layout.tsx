@@ -1,5 +1,12 @@
+import clsx from "clsx";
 import type { Metadata } from "next";
+import { Parkinsans } from "next/font/google";
+
 import "./globals.css";
+
+const parkinsans = Parkinsans({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Pokomusika",
@@ -13,7 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased`}>
+    <html
+      lang="en"
+      className={clsx("h-full antialiased", parkinsans.className)}
+    >
       <body>{children}</body>
     </html>
   );
