@@ -63,16 +63,16 @@ export const BottomBar = () => {
             Icon={isPlaying ? FaPause : FaPlay}
             onClick={() => {
               if (!isPlaying) {
-                audio?.playSong(
+                audio?.playSong({
                   tracks,
-                  (index) => {
+                  onStep: (index) => {
                     setPlayheadIndex(index);
                   },
-                  () => {
+                  onEnd: () => {
                     setIsPlaying(false);
                     setPlayheadIndex(-1);
                   },
-                );
+                });
                 setIsPlaying(true);
               } else {
                 audio?.pause();

@@ -34,11 +34,15 @@ export class AudioManager {
     this.sampler.triggerAttackRelease(note, 0.1);
   };
 
-  playSong = async (
-    tracks: SongTracks,
-    onStep?: (index: number) => void,
-    onEnd?: () => void,
-  ) => {
+  playSong = async ({
+    tracks,
+    onStep,
+    onEnd,
+  }: {
+    tracks: SongTracks;
+    onStep?: (index: number) => void;
+    onEnd?: () => void;
+  }) => {
     const tone = await import("tone");
     await tone.start();
     const transport = tone.getTransport();
