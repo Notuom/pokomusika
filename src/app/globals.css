@@ -3,7 +3,6 @@
 @theme inline {
   --color-background: #e1e7ff;
   --color-foreground: #171717;
-  --color-button-background: #eac7fd;
 
   --color-note-c-low: #ff687e;
   --color-note-d: #fab148;
@@ -15,8 +14,15 @@
   --color-note-c-high: #e54cd8;
   --color-timeline-selected: var(--color-purple-200);
 
-  --height-piano: calc(var(--spacing) * 32);
+  --color-bottom-bar-border: #dddddd;
+  --color-bottom-bar-gradient-top: #f6f6f6;
+  --color-bottom-bar-gradient-bottom: #f0f0f0;
+  --color-bottom-bar-button-background: #eeedf1;
+  --color-bottom-bar-button-icon: var(--color-gray-800);
+
   --size-bottom-bar-button: calc(var(--spacing) * 12);
+
+  --height-piano: calc(var(--spacing) * 32);
   --padding-bottom-composer: calc(
     var(--height-piano) + var(--size-bottom-bar-button) + var(--spacing) * 2
   );

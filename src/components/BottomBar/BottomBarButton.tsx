@@ -16,12 +16,12 @@ export const BottomBarButton = ({
 }: BottomBarButtonProps) => {
   return (
     <button
-      className="inline-flex justify-center items-center size-(--size-bottom-bar-button) bg-button-background"
+      className="flex justify-center items-center size-(--size-bottom-bar-button) rounded-xl bg-bottom-bar-button-background text-bottom-bar-button-icon"
       aria-label={label}
       type="button"
       onClick={onClick}
     >
-      {<Icon className="size-8" />}
+      {<Icon className="size-6" />}
     </button>
   );
 };

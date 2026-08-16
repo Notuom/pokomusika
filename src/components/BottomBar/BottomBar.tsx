@@ -41,71 +41,77 @@ export const BottomBar = () => {
           showPianoKeyboard ? "translate-none" : "translate-y-32",
         )}
       >
-        <div className="flex justify-center gap-1 w-full">
-          <BottomBarButton
-            label="Delete Note"
-            Icon={FaDeleteLeft}
-            onClick={() => {
-              deleteSelectedNote();
-            }}
-          />
-          <BottomBarButton
-            label="Insert Break"
-            Icon={FaQuoteRight}
-            onClick={() => {
-              addOrReplaceSelectedNote({ type: "break" });
-            }}
-          />
-          <BottomBarButton
-            label={
-              showPianoKeyboard ? "Hide Piano Keyboard" : "Show Piano Keyboard"
-            }
-            Icon={isPlaying ? FaPause : FaPlay}
-            onClick={() => {
-              if (!isPlaying) {
-                audio?.playSong({
-                  tracks,
-                  onStep: (index) => {
-                    setPlayheadIndex(index);
-                  },
-                  onEnd: () => {
-                    setIsPlaying(false);
-                    setPlayheadIndex(-1);
-                  },
-                });
-                setIsPlaying(true);
-              } else {
-                audio?.pause();
-                setIsPlaying(false);
+        <div className="px-2">
+          <div className="flex justify-center gap-1 my-2 mx-auto max-w-120 p-4 border-2 rounded-3xl border-bottom-bar-border bg-linear-to-bl from-bottom-bar-gradient-top to-bottom-bar-gradient-bottom">
+            <BottomBarButton
+              label="Delete Note"
+              Icon={FaDeleteLeft}
+              onClick={() => {
+                deleteSelectedNote();
+              }}
+            />
+            <BottomBarButton
+              label="Insert Break"
+              Icon={FaQuoteRight}
+              onClick={() => {
+                addOrReplaceSelectedNote({ type: "break" });
+              }}
+            />
+            <BottomBarButton
+              label={
+                showPianoKeyboard
+                  ? "Hide Piano Keyboard"
+                  : "Show Piano Keyboard"
               }
-            }}
-          />
-          <BottomBarButton
-            label="Stop"
-            Icon={FaStop}
-            onClick={() => {
-              audio?.stop();
-              setIsPlaying(false);
-              setPlayheadIndex(-1);
-            }}
-          />
-          <BottomBarButton
-            label="Delete Song"
-            Icon={FaTrash}
-            onClick={() => {
-              empty();
-              audio?.stop();
-              setIsPlaying(false);
-              setPlayheadIndex(-1);
-            }}
-          />
-          <BottomBarButton
-            label={
-              showPianoKeyboard ? "Hide Piano Keyboard" : "Show Piano Keyboard"
-            }
-            Icon={showPianoKeyboard ? FaRegKeyboard : FaKeyboard}
-            onClick={toggleShowPianoKeyboard}
-          />
+              Icon={isPlaying ? FaPause : FaPlay}
+              onClick={() => {
+                if (!isPlaying) {
+                  audio?.playSong({
+                    tracks,
+                    onStep: (index) => {
+                      setPlayheadIndex(index);
+                    },
+                    onEnd: () => {
+                      setIsPlaying(false);
+                      setPlayheadIndex(-1);
+                    },
+                  });
+                  setIsPlaying(true);
+                } else {
+                  audio?.pause();
+                  setIsPlaying(false);
+                }
+              }}
+            />
+            <BottomBarButton
+              label="Stop"
+              Icon={FaStop}
+              onClick={() => {
+                audio?.stop();
+                setIsPlaying(false);
+                setPlayheadIndex(-1);
+              }}
+            />
+            <BottomBarButton
+              label="Delete Song"
+              Icon={FaTrash}
+              onClick={() => {
+                empty();
+                audio?.stop();
+                setIsPlaying(false);
+                setPlayheadIndex(-1);
+              }}
+            />
+            <BottomBarButton
+              label={
+                showPianoKeyboard
+                  ? "Hide Piano Keyboard"
+                  : "Show Piano Keyboard"
+              }
+              Icon={showPianoKeyboard ? FaRegKeyboard : FaKeyboard}
+              onClick={toggleShowPianoKeyboard}
+            />
+          </div>
         </div>
         <div className="flex justify-center w-full bg-black">
           <PianoKeyboard isVisible={showPianoKeyboard} />
